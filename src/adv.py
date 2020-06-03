@@ -1,5 +1,5 @@
 from room import Room
-
+from player import Player
 # Declare all the rooms
 
 room = {
@@ -49,3 +49,55 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+
+# start of game
+# welcome player find the treasure
+# user choice of where to go [n][e][s][w][q]
+def welcome_message():
+    welcome_message = 'Welcome to andrews lost treasure! \nIt is up to you to find the lost treasure!'
+    print(welcome_message)
+
+
+welcome_message()
+
+andrew = Player("Andrew", room['outside'])
+print(andrew.name, "You are at", andrew.current_room.name, "where to now?")
+
+
+while True:
+    move = input("[n] North [e] East [s] South [w] West [q] Quit\n")
+    # player moves to foyer by clicking "n"
+    if move == "q":
+        print("Farewell Good Sir")
+        quit()
+    if move == "n":
+        if andrew.current_room.n_to == None:
+            print("warning there seems to be no room in that path!")
+        else:
+            andrew.current_room = andrew.current_room.n_to
+            print(andrew.current_room.name)
+            print(andrew.current_room.description)
+    elif move == "e":
+        if andrew.current_room.e_to == None:
+            print("warning there seems to be no room in that path!")
+        else:
+            andrew.current_room = andrew.current_room.e_to
+            print(andrew.current_room.name)
+            print(andrew.current_room.description)
+    elif move == "s":
+        if andrew.current_room.s_to == None:
+            print("warning there seems to be no room in that path!")
+        else:
+            andrew.current_room = andrew.current_room.s_to
+            print(andrew.current_room.name)
+            print(andrew.current_room.description)
+    elif move == "w":
+        if andrew.current_room.w_to == None:
+            print("warning there seems to be no room in that path!")
+        else:
+            andrew.current_room = andrew.current_room.w_to
+            print(andrew.current_room.name)
+            print(andrew.current_room.description)
+
+print("please continue")
