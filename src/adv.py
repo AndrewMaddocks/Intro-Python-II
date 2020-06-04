@@ -3,6 +3,20 @@ from player import Player
 from item import Item
 # Declare all the rooms
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKRED = '\033[91m'
+    OKGREY = '\033[90m'
+    OKBLUE = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons"),
@@ -78,79 +92,98 @@ room['treasure'].add_item(chest)
 # user choice of where to go [n][e][s][w][q]
 def found_item():
     for item in andrew.current_room.items:
-        print("You found a {}!".format(item.name))
-        pick_up = input(
-            "Please type the item you would like to pick up is this format  [take] [name of item].")
+        print(bcolors.OKGREEN + "\nYou found a {}!\n".format(item.name) + bcolors.ENDC)
+        pick_up = input(bcolors.OKBLUE +
+                        "Please type the item you would like to pick up. \nInsert [take] [name of item] or type no.\n\nEnter here:" + bcolors.ENDC)
         if pick_up == "take {}".format(item.name):
-            # print("the" + andrew.current_room.remove_item(item.name) +
-            #       "was removed from the room")
-            # print(andrew.pickup_item(item.name))
             andrew.current_room.remove_item(item)
             andrew.pickup_item(item)
-        else:
-            print("you need to pick it up")
+            print(bcolors.OKGREEN +
+                  "\nYou have picked up a {}\n".format(item.name) + bcolors.ENDC)
+
+
+def dropped_item():
+
+    for item in andrew.inventory:
+        drop = input(bcolors.OKBLUE +
+                     "Would you like to drop an item? \nInsert [drop] [name of item] or type no.\n\nEnter here:" + bcolors.ENDC)
+        if drop == "drop {}".format(item.name):
+            andrew.drop_item(item)
+            andrew.current_room.add_item(item)
+
+
+def warning_message():
+    print(bcolors.WARNING +
+          "\nWARNING there seems to be no room in that path!\n")
 
 
 def welcome_message():
-    welcome_message = 'Welcome to andrews lost treasure! \nIt is up to you to find the lost treasure!'
+    welcome_message = f'\n{bcolors.HEADER}{bcolors.BOLD}Welcome to andrews lost treasure! \nIt is up to you to find the lost treasure!{bcolors.ENDC}{bcolors.ENDC}\n'
     print(welcome_message)
+
+
+def location():
+    print(
+        f"\n{bcolors.OKGREEN }You are now in {andrew.current_room.name} {bcolors.ENDC}\n")
+    print(bcolors.HEADER + andrew.current_room.description + bcolors.ENDC)
 
 
 welcome_message()
 
 andrew = Player("Andrew", room['outside'])
-print(andrew.name, "You are at", andrew.current_room.name, "where to now?")
-found_item()
+print(f"{bcolors.OKGREEN}{andrew.name}, You are at the,{andrew.current_room.name} \nwhere to now?{bcolors.ENDC}\n")
+# found_item()
 while True:
     move = input(
-        "[i] Inventory \n[n] North \n[e] East \n[s] South \n[w] West \n[q] Quit\nInput here:")
+        f"{bcolors.OKBLUE}\n[i] Check Inventory \n[n] North \n[e] East \n[s] South \n[w] West \n[q] Quit\n\nEnter here:{bcolors.ENDC}")
     # player moves to foyer by clicking "n"
     if move == "q":
-        print("Farewell Good Sir")
+        print("\nFarewell Good Sir\n")
         quit()
-    if move == "i":
 
-        for item in andrew.inventory:
-            if len(str(item)) > 0:
-                print("Here is a inventory of your items")
-                print("a {}".format(item.name))
-            else:
-                print("You have no items yet!")
+    if move == "i":
+        if len(andrew.inventory) > 0:
+            print(bcolors.OKGREEN +
+                  "\nHere is a inventory of your items:" + bcolors.ENDC)
+            for item in andrew.inventory:
+                print(bcolors.UNDERLINE + bcolors.BOLD +
+                      "a {}".format(item.name) + bcolors.ENDC)
+                drop = input(bcolors.OKBLUE +
+                             "\nWould you like to drop an item? \nInsert [drop] [name of item] or type no.\n\nEnter here:" + bcolors.ENDC)
+            if drop == "drop {}".format(item.name):
+                andrew.drop_item(item)
+                andrew.current_room.add_item(item)
+                print(
+                    bcolors.OKGREEN + "\nYou have dropped a {}\n".format(item.name) + bcolors.ENDC)
+        else:
+            print(bcolors.OKRED + "\nYou have no items yet!\n" + bcolors.ENDC)
     if move == "n":
         if andrew.current_room.n_to == None:
-            print("WARNING there seems to be no room in that path!")
+            warning_message()
         else:
             andrew.current_room = andrew.current_room.n_to
-            print(andrew.current_room.name)
-            print(andrew.current_room.description)
-            for item in andrew.current_room.items:
-                print(item.name)
+            location()
+            found_item()
     elif move == "e":
         if andrew.current_room.e_to == None:
-            print("WARNING there seems to be no room in that path!")
+            warning_message()
         else:
             andrew.current_room = andrew.current_room.e_to
-            print(andrew.current_room.name)
-            print(andrew.current_room.description)
-            for item in andrew.current_room.items:
-                print(item.name)
+            location()
+            found_item()
     elif move == "s":
         if andrew.current_room.s_to == None:
-            print("WARNING there seems to be no room in that path!")
+            warning_message()
         else:
             andrew.current_room = andrew.current_room.s_to
-            print(andrew.current_room.name)
-            print(andrew.current_room.description)
-            for item in andrew.current_room.items:
-                print(item.name)
+            location()
+            found_item()
     elif move == "w":
         if andrew.current_room.w_to == None:
-            print("WARNING there seems to be no room in that path!")
+            warning_message()
         else:
             andrew.current_room = andrew.current_room.w_to
-            print(andrew.current_room.name)
-            print(andrew.current_room.description)
-            for item in andrew.current_room.items:
-                print(item.name)
+            location()
+            found_item()
 
 print("please continue")
